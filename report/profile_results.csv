@@ -1,0 +1,4 @@
+kernel,duration_us,blocks,threads,registers,shared_kb,occupancy,load_conflicts,store_conflicts
+histogram,51.296000,256,256,16,1.024000,87.723009,44,0
+scan,2.560000,1,256,18,1.056000,16.223210,0,0
+kernel,19.040000,8192,256,16,0.000000,76.830728,0,0

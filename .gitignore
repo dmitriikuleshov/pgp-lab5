@@ -1,0 +1,7 @@
+.vscode
+.venv
+build
+__pycache__
+data/in/profile*.data
+report/benchmark_results.txt
+report/profile
