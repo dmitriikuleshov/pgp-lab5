@@ -61,12 +61,26 @@ __global__ void scan(int *positions, int n) {
     int idx = threadIdx.x;
     int offset = 1;
     int left, right, tmp;
+    // bank = index_in_values % 32
+    // 256 elements + 8 additional elements
+    // Elements: [ 0 ... 31 ]  f  [ 32 ... 63    ]  f  [ 64 ... 95 ]
+    // Banks:    [ 0 ... 31 ]  0  [ 1  ... 31, 0 ]  1  [ 2 ... 31,0,1 ]
+
+    // Elements: [ 0 ... 31 ]  [ 32 ... 63 ]  [ 64 ... 95 ]
+    // Banks:    [ 0 ... 31 ]  [  0 ... 31 ]  [  0 ... 31 ]
 
     __shared__ int values[VALUES + VALUES / BANKS];
 
+    // Нить 0:   positions[0]  → values[0]
+    // Нить 31:  positions[31] → values[31] 
+    //      values[32] — пропуск
+    // Нить 32:  positions[32] → values[33]
+    // Нить 33:  positions[33] → values[34]
     values[idx + idx / BANKS] = positions[idx];
     __syncthreads();
 
+    // сумма каждой группы записывается в ее поледний элемент
+    // на каждой итерации используется в 2 раза меньше нитей
     for (int size = VALUES / 2; size > 0; size /= 2) {
         if (idx < size) {
             left = offset * (2 * idx + 1) - 1;
