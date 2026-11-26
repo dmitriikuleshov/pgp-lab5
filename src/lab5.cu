@@ -92,6 +92,7 @@ __global__ void scan(int *positions, int n) {
         __syncthreads();
     }
 
+    // Последние элемент заменяем 0 (с учетом фиктивных)
     if (idx == 0) {
         values[VALUES - 1 + (VALUES - 1) / BANKS] = 0;
     }
